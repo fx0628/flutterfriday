@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> {
           _buildUIBHeroSection(context),
           _buildUIBFeaturesSection(context),
           _buildUIBDisclaimerSection(context),
+          _buildUIBAICapabilitySection(context),
           _buildUIBVendorSection(context),
           _buildUIBFooter(context),
         ],
@@ -277,6 +278,127 @@ class _HomePageState extends State<HomePage> {
                 ),
                 textAlign: TextAlign.center,
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUIBAICapabilitySection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+      color: Colors.white,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Column(
+            children: [
+              Text(
+                'AI 能力邊界說明',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: AppTheme.nearBlack,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 56),
+              Wrap(
+                spacing: 32,
+                runSpacing: 32,
+                alignment: WrapAlignment.center,
+                children: [
+                  _buildUIBCapabilityColumn(
+                    context,
+                    title: '✅ 可以做',
+                    color: Colors.green.shade700,
+                    items: [
+                      '圖片風格化與合成套殼',
+                      '文字描述生成殼面設計',
+                      '近 3 年主流機型預覽',
+                      '平面與簡單 3D 預覽效果',
+                    ],
+                  ),
+                  _buildUIBCapabilityColumn(
+                    context,
+                    title: '❌ 不可做',
+                    color: Colors.red.shade700,
+                    items: [
+                      '保證預覽效果等同實物',
+                      '證件、授權用途設計',
+                      '侵權、成人、暴力內容',
+                      'App 內付款給蝦皮廠商',
+                    ],
+                  ),
+                  _buildUIBCapabilityColumn(
+                    context,
+                    title: '⏸️ 暫緩開放',
+                    color: Colors.orange.shade700,
+                    items: [
+                      '多圖拼貼',
+                      '品牌聯名',
+                      'AR 預覽（可含客製化材質選擇若 A 版有）',
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUIBCapabilityColumn(
+    BuildContext context, {
+    required String title,
+    required Color color,
+    required List<String> items,
+  }) {
+    return SizedBox(
+      width: 280,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ...items.map((item) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      margin: const EdgeInsets.only(top: 7, right: 10),
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        item,
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.6,
+                          color: AppTheme.nearBlack.withOpacity(0.8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
             ],
           ),
         ),

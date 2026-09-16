@@ -112,12 +112,20 @@ class _CreateInputPageState extends State<CreateInputPage> {
         ],
       ),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: ListView(
-              padding: EdgeInsets.all(isUIB ? 32 : 20),
-              children: [
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                  maxWidth: 640,
+                ),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: EdgeInsets.all(isUIB ? 32 : 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                 // Large product image for UI-B
                 if (isUIB) ...[
                   SizedBox(
@@ -243,9 +251,13 @@ class _CreateInputPageState extends State<CreateInputPage> {
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

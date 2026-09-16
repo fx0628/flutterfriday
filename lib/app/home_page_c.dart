@@ -37,6 +37,12 @@ class _HomePageCState extends State<HomePageC> {
     }
   }
 
+  String _assetUrl(String assetKey) {
+    final base = html.document.querySelector('base')?.getAttribute('href') ?? '/';
+    final normalizedBase = base.endsWith('/') ? base : '$base/';
+    return '${normalizedBase}assets/$assetKey';
+  }
+
   void _registerVideoElement() {
     if (_videoRegistered) return;
 
@@ -44,8 +50,8 @@ class _HomePageCState extends State<HomePageC> {
       // ignore: undefined_prefixed_name
       ui_web.platformViewRegistry.registerViewFactory(_videoViewType, (int viewId) {
         final videoElement = html.VideoElement()
-          ..src = 'assets/videos/hero-c.mp4'
-          ..poster = 'assets/videos/hero-c-poster.webp'
+          ..src = _assetUrl('assets/videos/hero-c.mp4')
+          ..poster = _assetUrl('assets/videos/hero-c-poster.webp')
           ..autoplay = true
           ..muted = true
           ..loop = true

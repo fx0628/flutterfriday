@@ -1,5 +1,5 @@
 import 'dart:html' as html;
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/material.dart';
 
@@ -42,14 +42,14 @@ class _HomePageCState extends State<HomePageC> {
 
     try {
       // ignore: undefined_prefixed_name
-      ui.platformViewRegistry.registerViewFactory(_videoViewType, (int viewId) {
+      ui_web.platformViewRegistry.registerViewFactory(_videoViewType, (int viewId) {
         final videoElement = html.VideoElement()
-          ..src = 'assets/assets/videos/hero-c.mp4'
-          ..poster = 'assets/assets/videos/hero-c-poster.webp'
+          ..src = 'assets/videos/hero-c.mp4'
+          ..poster = 'assets/videos/hero-c-poster.webp'
           ..autoplay = true
           ..muted = true
           ..loop = true
-          ..playsInline = true
+          ..setAttribute('playsinline', '')
           ..style.width = '100%'
           ..style.height = '100%'
           ..style.objectFit = 'cover'

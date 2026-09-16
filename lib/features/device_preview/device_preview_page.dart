@@ -107,7 +107,7 @@ class _DevicePreviewPageState extends State<DevicePreviewPage> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
-                      initialValue: _device.id,
+                      value: _device.id,
                       isExpanded: true,
                       decoration: const InputDecoration(labelText: '全部支援機型'),
                       items: [

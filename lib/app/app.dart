@@ -1,6 +1,9 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 
 import '../features/ai_compose/compose_result.dart';
 import '../features/ai_compose/composing_page.dart';
@@ -22,6 +25,21 @@ class FlutterFridayApp extends StatefulWidget {
 
 class _FlutterFridayAppState extends State<FlutterFridayApp> {
   bool _useUIB = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInitialRoute();
+  }
+
+  void _checkInitialRoute() {
+    if (kIsWeb) {
+      final hash = html.window.location.hash;
+      if (hash == '#/b' || hash == '#/b/') {
+        setState(() => _useUIB = true);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

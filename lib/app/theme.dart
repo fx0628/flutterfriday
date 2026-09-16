@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static const Color seed = Color(0xFF6C5CE7);
   static const Color freeBadge = Color(0xFF00B894);
+  
+  static const Color darkBackground = Color(0xFF0A0A0A);
+  static const Color darkSurface = Color(0xFF1A1A1A);
+  static const Color darkSurfaceVariant = Color(0xFF252525);
+  static const Color accentPurple = Color(0xFF9D7CFF);
+  static const Color accentCyan = Color(0xFF00D9FF);
 
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
@@ -29,6 +35,70 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+  
+  static ThemeData dark() {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: darkBackground,
+      colorScheme: ColorScheme.dark(
+        primary: accentPurple,
+        secondary: accentCyan,
+        surface: darkSurface,
+        surfaceContainerHighest: darkSurfaceVariant,
+        background: darkBackground,
+      ),
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(
+          fontSize: 56,
+          fontWeight: FontWeight.bold,
+          letterSpacing: -1.5,
+          height: 1.1,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.5,
+        ),
+        headlineSmall: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 18,
+          height: 1.6,
+          letterSpacing: 0.15,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 16,
+          height: 1.5,
+        ),
+      ),
+      appBarTheme: const AppBarTheme(
+        centerTitle: true,
+        backgroundColor: darkBackground,
+        elevation: 0,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(200, 56),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 8,
+          shadowColor: accentPurple.withOpacity(0.4),
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: darkSurface,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
       ),
     );
   }

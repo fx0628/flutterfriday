@@ -20,7 +20,7 @@ class FlutterFridayApp extends StatelessWidget {
     return MaterialApp(
       title: 'flutterFriday',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
+      theme: AppTheme.dark(),
       builder: (context, child) => child ?? const SizedBox.shrink(),
       initialRoute: AppRoutes.home,
       onGenerateRoute: (settings) {

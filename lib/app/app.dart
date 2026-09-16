@@ -9,6 +9,7 @@ import '../features/device_preview/device_catalog.dart';
 import '../features/device_preview/device_preview_page.dart';
 import '../features/find_vendor/find_vendor_page.dart';
 import 'home_page.dart';
+import 'home_page_c.dart';
 import 'routes.dart';
 import 'theme.dart';
 
@@ -52,6 +53,11 @@ class _FlutterFridayAppState extends State<FlutterFridayApp> {
             return MaterialPageRoute(
               settings: settings,
               builder: (_) => const HomePage(),
+            );
+          case AppRoutes.homeC:
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (_) => const HomePageC(),
             );
           case AppRoutes.create:
             return MaterialPageRoute(

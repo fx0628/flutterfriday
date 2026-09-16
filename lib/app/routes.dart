@@ -2,6 +2,7 @@
 class AppRoutes {
   static const home = '/';
   static const uiB = '/b';
+  static const homeC = '/c';
   static const create = '/create';
   static const composing = '/composing';
   static const preview = '/preview';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/routes.dart';
 import '../../app/theme.dart';
+import '../../app/app.dart';
 import 'compose_result.dart';
 import 'mock_ai_adapter.dart';
 
@@ -63,10 +64,13 @@ class _ComposingPageState extends State<ComposingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isUIB = UIVariantProvider.isUIB(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI 合成中'),
-        actions: const [
+        title: Text(isUIB ? 'flutterFriday' : 'AI 合成中'),
+        centerTitle: !isUIB,
+        actions: isUIB ? null : const [
           Padding(
             padding: EdgeInsets.only(right: 12),
             child: Center(child: FreeBadge()),
@@ -88,9 +92,12 @@ class _ComposingPageState extends State<ComposingPage> {
                     const SizedBox(height: 16),
                     Text(_error!, textAlign: TextAlign.center),
                     const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('返回'),
+                    SizedBox(
+                      height: isUIB ? 56 : null,
+                      child: FilledButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('返回'),
+                      ),
                     ),
                   ],
                 )

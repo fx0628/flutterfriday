@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'routes.dart';
 import 'theme.dart';
+import 'app.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,19 +36,351 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isUIB = UIVariantProvider.isUIB(context);
+    
     return Scaffold(
-      body: SingleChildScrollView(
-        controller: _scrollController,
+      body: isUIB ? _buildUIB(context) : _buildUIA(context),
+    );
+  }
+
+  // UI-B: Light, minimal, generous whitespace, no parallax
+  Widget _buildUIB(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildUIBAppBar(context),
+          _buildUIBHeroSection(context),
+          _buildUIBFeaturesSection(context),
+          _buildUIBDisclaimerSection(context),
+          _buildUIBVendorSection(context),
+          _buildUIBFooter(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUIBAppBar(BuildContext context) {
+    return Container(
+      height: 56,
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Text(
+            'flutterFriday',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.nearBlack,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUIBHeroSection(BuildContext context) {
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final imageHeight = screenHeight * 0.5;
+    
+    return Column(
+      children: [
+        // Large product image ≥45% height
+        SizedBox(
+          height: imageHeight,
+          width: double.infinity,
+          child: Image.asset(
+            'assets/images/phone-product-dark.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        const SizedBox(height: 48),
+        // Dual entry: upload or text
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Column(
+              children: [
+                Text(
+                  '上傳圖片或用文字描述',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: AppTheme.nearBlack,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'AI 幫你合成專屬手機殼',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: AppTheme.nearBlack.withOpacity(0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(AppRoutes.create);
+                    },
+                    child: const Text(
+                      '開始創作',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 64),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUIBFeaturesSection(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Column(
+            children: [
+              Text(
+                '三大核心功能',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: AppTheme.nearBlack,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 56),
+              Wrap(
+                spacing: 32,
+                runSpacing: 32,
+                alignment: WrapAlignment.center,
+                children: [
+                  _buildUIBFeatureCard(
+                    context,
+                    icon: Icons.upload_file,
+                    title: '圖文輸入',
+                    description: '上傳你的照片或用文字描述你的創意想法',
+                  ),
+                  _buildUIBFeatureCard(
+                    context,
+                    icon: Icons.auto_awesome,
+                    title: 'AI 套殼',
+                    description: 'AI 自動幫你生成獨特的手機殼設計',
+                  ),
+                  _buildUIBFeatureCard(
+                    context,
+                    icon: Icons.phone_android,
+                    title: '機型預覽',
+                    description: '支援近 3 年主流機型的預覽效果',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUIBFeatureCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String description,
+  }) {
+    return SizedBox(
+      width: 280,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryCTA.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: 40,
+                  color: AppTheme.primaryCTA,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.nearBlack,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                description,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: AppTheme.nearBlack.withOpacity(0.7),
+                  height: 1.6,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUIBDisclaimerSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 64),
+      color: AppTheme.lightBackground,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                size: 48,
+                color: Colors.orange.shade700,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                '預覽效果不保證等同於實際成品',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.nearBlack,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '實際印製成品可能因印刷技術、材質、光線等因素與預覽有所差異\n建議下單前與客製廠商確認細節',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppTheme.nearBlack.withOpacity(0.7),
+                  height: 1.8,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUIBVendorSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+      color: Colors.white,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            children: [
+              Text(
+                '找客製廠商',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: AppTheme.nearBlack,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                '我們會協助您開啟蝦皮搜尋「客製手機殼」\n您可以自由選擇合適的客製廠商進行製作',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppTheme.nearBlack.withOpacity(0.7),
+                  height: 1.8,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(AppRoutes.create);
+                  },
+                  child: const Text(
+                    '開始創作',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUIBFooter(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+      color: AppTheme.lightBackground,
+      child: Center(
         child: Column(
           children: [
-            _buildHeroSection(context),
-            _buildFeaturesSection(context),
-            _buildPreviewDisclaimerSection(context),
-            _buildVendorFlowSection(context),
-            _buildExpectationsManagementSection(context),
-            _buildFooter(context),
+            Text(
+              'flutterFriday',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.nearBlack,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'AI 手機殼創作平台',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppTheme.nearBlack.withOpacity(0.5),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              '© 2026 flutterFriday. 僅供個人創作使用。',
+              style: TextStyle(
+                fontSize: 13,
+                color: AppTheme.nearBlack.withOpacity(0.4),
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  // UI-A: Original dark theme with parallax
+  Widget _buildUIA(BuildContext context) {
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        children: [
+          _buildHeroSection(context),
+          _buildFeaturesSection(context),
+          _buildPreviewDisclaimerSection(context),
+          _buildVendorFlowSection(context),
+          _buildExpectationsManagementSection(context),
+          _buildFooter(context),
+        ],
       ),
     );
   }

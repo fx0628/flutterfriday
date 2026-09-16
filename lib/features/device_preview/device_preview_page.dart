@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/routes.dart';
 import '../../app/theme.dart';
+import '../../app/app.dart';
 import '../ai_compose/compose_result.dart';
 import 'device_catalog.dart';
 
@@ -34,12 +35,15 @@ class _DevicePreviewPageState extends State<DevicePreviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isUIB = UIVariantProvider.isUIB(context);
     final scheme = Theme.of(context).colorScheme;
-    final previewMaxH = (MediaQuery.sizeOf(context).height * 0.38).clamp(200.0, 360.0);
+    final previewMaxH = (MediaQuery.sizeOf(context).height * (isUIB ? 0.5 : 0.38)).clamp(200.0, 400.0);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('裝置預覽'),
-        actions: const [
+        title: Text(isUIB ? 'flutterFriday' : '裝置預覽'),
+        centerTitle: !isUIB,
+        actions: isUIB ? null : const [
           Padding(
             padding: EdgeInsets.only(right: 12),
             child: Center(child: FreeBadge()),
@@ -59,7 +63,12 @@ class _DevicePreviewPageState extends State<DevicePreviewPage> {
                 child: ListView(
                   primary: true,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+                  padding: EdgeInsets.fromLTRB(
+                    isUIB ? 32 : 20,
+                    isUIB ? 24 : 16,
+                    isUIB ? 32 : 20,
+                    isUIB ? 40 : 32,
+                  ),
                   children: [
                     Text(
                       '預覽僅供參考，不保證與實物完全一致',
@@ -69,7 +78,8 @@ class _DevicePreviewPageState extends State<DevicePreviewPage> {
                           ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: isUIB ? 20 : 12),
+                    // Large case art preview
                     SizedBox(
                       height: previewMaxH,
                       width: double.infinity,
@@ -79,7 +89,7 @@ class _DevicePreviewPageState extends State<DevicePreviewPage> {
                         device: _device,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: isUIB ? 24 : 16),
                     Text('殼材', style: Theme.of(context).textTheme.titleSmall),
                     const SizedBox(height: 8),
                     SegmentedButton<CaseFinish>(
@@ -90,7 +100,7 @@ class _DevicePreviewPageState extends State<DevicePreviewPage> {
                       selected: {_finish},
                       onSelectionChanged: (s) => setState(() => _finish = s.first),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: isUIB ? 24 : 16),
                     Text('快速切換機型', style: Theme.of(context).textTheme.titleSmall),
                     const SizedBox(height: 8),
                     Wrap(
@@ -138,15 +148,21 @@ class _DevicePreviewPageState extends State<DevicePreviewPage> {
                       '清單外機型暫不支援。',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          AppRoutes.vendor,
-                          arguments: _device,
-                        );
-                      },
-                      child: const Text('找客製廠商'),
+                    SizedBox(height: isUIB ? 32 : 24),
+                    SizedBox(
+                      height: isUIB ? 56 : null,
+                      child: FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            AppRoutes.vendor,
+                            arguments: _device,
+                          );
+                        },
+                        child: Text(
+                          '找客製廠商',
+                          style: TextStyle(fontSize: isUIB ? 18 : null),
+                        ),
+                      ),
                     ),
                   ],
                 ),

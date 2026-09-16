@@ -12,18 +12,41 @@ import 'home_page.dart';
 import 'routes.dart';
 import 'theme.dart';
 
-class FlutterFridayApp extends StatelessWidget {
+class FlutterFridayApp extends StatefulWidget {
   const FlutterFridayApp({super.key});
+
+  @override
+  State<FlutterFridayApp> createState() => _FlutterFridayAppState();
+}
+
+class _FlutterFridayAppState extends State<FlutterFridayApp> {
+  bool _useUIB = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'flutterFriday',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark(),
-      builder: (context, child) => child ?? const SizedBox.shrink(),
+      theme: _useUIB ? AppTheme.light() : AppTheme.dark(),
+      builder: (context, child) {
+        return UIVariantProvider(
+          useUIB: _useUIB,
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       initialRoute: AppRoutes.home,
       onGenerateRoute: (settings) {
+        // Check for /b route to enable UI-B
+        if (settings.name == AppRoutes.uiB) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() => _useUIB = true);
+          });
+          return MaterialPageRoute(
+            settings: const RouteSettings(name: AppRoutes.home),
+            builder: (_) => const HomePage(),
+          );
+        }
+        
         switch (settings.name) {
           case AppRoutes.home:
             return MaterialPageRoute(
@@ -110,5 +133,30 @@ class FlutterFridayApp extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Provides UI variant context (A or B) to descendant widgets
+class UIVariantProvider extends InheritedWidget {
+  const UIVariantProvider({
+    super.key,
+    required this.useUIB,
+    required super.child,
+  });
+
+  final bool useUIB;
+
+  static UIVariantProvider? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<UIVariantProvider>();
+  }
+
+  static bool isUIB(BuildContext context) {
+    final provider = maybeOf(context);
+    return provider?.useUIB ?? false;
+  }
+
+  @override
+  bool updateShouldNotify(UIVariantProvider oldWidget) {
+    return useUIB != oldWidget.useUIB;
   }
 }

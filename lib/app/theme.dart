@@ -11,23 +11,35 @@ class AppTheme {
   static const Color accentPurple = Color(0xFF9D7CFF);
   static const Color accentCyan = Color(0xFF00D9FF);
 
+  // UI-B colors
+  static const Color lightBackground = Color(0xFFF5F5F7);
+  static const Color nearBlack = Color(0xFF1D1D1F);
+  static const Color primaryCTA = Color(0xFF0071E3);
+
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
-      seedColor: seed,
+      seedColor: primaryCTA,
       brightness: Brightness.light,
+      surface: lightBackground,
+      onSurface: nearBlack,
+      primary: primaryCTA,
     );
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
+      scaffoldBackgroundColor: lightBackground,
       appBarTheme: AppBarTheme(
-        centerTitle: true,
-        backgroundColor: scheme.surface,
-        foregroundColor: scheme.onSurface,
+        centerTitle: false,
+        backgroundColor: Colors.white,
+        foregroundColor: nearBlack,
         elevation: 0,
+        toolbarHeight: 56,
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(48),
+          backgroundColor: primaryCTA,
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -35,6 +47,14 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: nearBlack.withOpacity(0.1)),
+        ),
       ),
     );
   }

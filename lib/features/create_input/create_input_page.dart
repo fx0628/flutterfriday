@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/routes.dart';
 import '../../app/theme.dart';
+import '../../app/app.dart';
 import '../ai_compose/compose_result.dart';
 import 'content_filter.dart';
 
@@ -97,10 +98,13 @@ class _CreateInputPageState extends State<CreateInputPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isUIB = UIVariantProvider.isUIB(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('建立設計'),
-        actions: const [
+        title: Text(isUIB ? 'flutterFriday' : '建立設計'),
+        centerTitle: !isUIB,
+        actions: isUIB ? null : const [
           Padding(
             padding: EdgeInsets.only(right: 12),
             child: Center(child: FreeBadge()),
@@ -110,25 +114,46 @@ class _CreateInputPageState extends State<CreateInputPage> {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
+            constraints: const BoxConstraints(maxWidth: 640),
             child: ListView(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(isUIB ? 32 : 20),
               children: [
+                // Large product image for UI-B
+                if (isUIB) ...[
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.4,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        'assets/images/phone-product-dark.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                ],
                 Text(
-                  '上傳圖片或輸入文字，AI 會合成到手機殼上預覽。',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  isUIB 
+                    ? '上傳圖片或輸入文字'
+                    : '上傳圖片或輸入文字，AI 會合成到手機殼上預覽。',
+                  style: isUIB 
+                    ? Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: AppTheme.nearBlack,
+                        fontWeight: FontWeight.w600,
+                      )
+                    : Theme.of(context).textTheme.bodyLarge,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: isUIB ? 16 : 8),
                 Text(
                   '不支援證件／身分證、成人、暴力、侵權內容。',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.error,
                       ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: isUIB ? 32 : 24),
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(isUIB ? 24 : 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -163,7 +188,7 @@ class _CreateInputPageState extends State<CreateInputPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: isUIB ? 24 : 16),
                 Row(
                   children: [
                     const Expanded(child: Divider()),
@@ -177,7 +202,7 @@ class _CreateInputPageState extends State<CreateInputPage> {
                     const Expanded(child: Divider()),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: isUIB ? 24 : 16),
                 TextField(
                   controller: _textController,
                   maxLines: 4,
@@ -207,10 +232,16 @@ class _CreateInputPageState extends State<CreateInputPage> {
                     ),
                   ),
                 ],
-                const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: _submit,
-                  child: const Text('開始合成'),
+                SizedBox(height: isUIB ? 32 : 24),
+                SizedBox(
+                  height: isUIB ? 56 : null,
+                  child: FilledButton(
+                    onPressed: _submit,
+                    child: Text(
+                      '開始合成',
+                      style: TextStyle(fontSize: isUIB ? 18 : null),
+                    ),
+                  ),
                 ),
               ],
             ),

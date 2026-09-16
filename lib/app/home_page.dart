@@ -2,13 +2,41 @@ import 'package:flutter/material.dart';
 
 import 'routes.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final ScrollController _scrollController = ScrollController();
+  double _scrollOffset = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    setState(() {
+      _scrollOffset = _scrollController.offset;
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Column(
           children: [
             _buildHeroSection(context),
@@ -26,113 +54,147 @@ class HomePage extends StatelessWidget {
   Widget _buildHeroSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth > 768;
+    final heroParallax = _scrollOffset * 0.5;
     
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 48 : 20,
-        vertical: isDesktop ? 120 : 80,
-      ),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 980),
-          child: Column(
-            children: [
-              Text(
-                'flutterFriday',
-                style: TextStyle(
-                  fontSize: isDesktop ? 72 : 48,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  letterSpacing: -2,
-                  height: 1.1,
-                ),
-                textAlign: TextAlign.center,
+    return SizedBox(
+      height: isDesktop ? 720 : 580,
+      child: Stack(
+        children: [
+          // Parallax background image
+          Positioned.fill(
+            child: Transform.translate(
+              offset: Offset(0, heroParallax),
+              child: Image.asset(
+                'assets/images/hero-dark-phone.jpg',
+                fit: BoxFit.cover,
               ),
-              SizedBox(height: isDesktop ? 24 : 16),
-              Text(
-                '上傳圖片或用文字描述\nAI 幫你合成專屬手機殼',
-                style: TextStyle(
-                  fontSize: isDesktop ? 32 : 24,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey.shade700,
-                  height: 1.4,
-                  letterSpacing: -0.5,
+            ),
+          ),
+          // Gradient overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.4),
+                    Colors.black.withOpacity(0.6),
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
-              SizedBox(height: isDesktop ? 40 : 32),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(AppRoutes.create);
-                },
-                style: ElevatedButton.styleFrom(
+            ),
+          ),
+          // Content
+          Positioned.fill(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 980),
+                child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: isDesktop ? 40 : 32,
-                    vertical: 18,
+                    horizontal: isDesktop ? 48 : 20,
                   ),
-                  backgroundColor: const Color(0xFF6C5CE7),
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(980),
-                  ),
-                ),
-                child: const Text(
-                  '開始創作',
-                  style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                '先免費體驗',
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(height: isDesktop ? 80 : 56),
-              Container(
-                height: isDesktop ? 480 : 300,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.phone_iphone,
-                          size: isDesktop ? 80 : 60, 
-                          color: Colors.grey.shade300),
-                      const SizedBox(height: 16),
                       Text(
-                        '待換：hero-preview.png',
+                        'flutterFriday',
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: isDesktop ? 72 : 48,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: -2,
+                          height: 1.1,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 20,
+                              color: Colors.black.withOpacity(0.3),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: isDesktop ? 24 : 16),
+                      Text(
+                        '上傳圖片或用文字描述\nAI 幫你合成專屬手機殼',
+                        style: TextStyle(
+                          fontSize: isDesktop ? 32 : 24,
                           fontWeight: FontWeight.w400,
-                          color: Colors.grey.shade400,
+                          color: Colors.white.withOpacity(0.95),
+                          height: 1.4,
+                          letterSpacing: -0.5,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10,
+                              color: Colors.black.withOpacity(0.3),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: isDesktop ? 40 : 32),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(AppRoutes.create);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isDesktop ? 40 : 32,
+                            vertical: 18,
+                          ),
+                          backgroundColor: const Color(0xFF6C5CE7),
+                          foregroundColor: Colors.white,
+                          elevation: 8,
+                          shadowColor: const Color(0xFF6C5CE7).withOpacity(0.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(980),
+                          ),
+                        ),
+                        child: const Text(
+                          '開始創作',
+                          style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ),
-                      Text(
-                        '建議尺寸：800x400 px',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade400,
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.green.shade300,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Text(
+                          '先免費體驗',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 8,
+                                color: Colors.black.withOpacity(0.3),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
